@@ -15,6 +15,9 @@ main:
 
 	bl	up1
 	bl	up2
+	
+	mov	r0, #3
+	
 	bl	up3
 	
 	pop		{pc}
