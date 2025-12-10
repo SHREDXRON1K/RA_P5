@@ -54,10 +54,8 @@ up3:
 	POP	{r5, r6, pc}		@ restore r5 and return
 	
 upfrom3:
-	PUSH	{r6, lr}
 	MOV	r0, r0, ASR #2
 	BX	lr
-	POP	{r6, pc}
 	
 
 
@@ -66,4 +64,5 @@ upfrom3:
 	.size	main,.Lfe1-main
 
 // End of File
+
 
