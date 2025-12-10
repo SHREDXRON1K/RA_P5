@@ -1,5 +1,5 @@
-// Name:ATHALA, ASTERO WAHYU		Matrikelnummer:1130003
-// Name:				Matrikelnummer:
+// Name:		Matrikelnummer:
+// Name:		Matrikelnummer:
 // Datum:
 
 	.file	"aufgabe2.S"
@@ -9,26 +9,61 @@
 	.global	main		@ nimmt das Symbol main in die globale Sysmboltabelle auf
 	.type	main,function
 main:
-	LDR	r1, =marke
+
+	mov	r0, #3
+	push	{lr}
+
+	bl	up1
+	bl	up2
+	bl	up3
 	
-	MOV	r0, #0
-	CMP	r0, #3
+	pop		{pc}
 
+// UP1 benutzt nur Scratchregister und stellt keine Blattroutine dar (ruft somit weitere
+// Unterprogramme auf)	
+up1:
 
-	BNE	marke
+	MOV	r12, lr		@save lr in scratchg register (no pushing)
+			
 	
-	MOV 	r0, #0 @wird nicht durchgefuehrt, wenn springt 
+	BL	upfrom1		@return, no stack, non leaf style
 
-
-	bx	lr
-marke:	.word	0x12345678
-
-	MOV	r0, #1 @wird durchgefuehrt, wenn dieses Branch besucht
+	ADD 	r0, r0, r0
 	
+	BX	r12		@return using scratch level LR
+	
+
+upfrom1:
+	MOV	r0, r0, LSL #2
+	BX	lr	
+
+
+// UP2 benutzt nur Scratchregister und stellt eine Blattroutine dar (ruft somit keine weiteren
+// Unterprogramme auf)
+up2:
+	MVN	r0, #0 		@ r0 = -1
+	BX	lr
+
+
+//UP3 benutzt Nicht-Scratchregister und stellt keine Blattroutine dar
+up3:
+	PUSH	{r5, r6, lr}		@r5 is non scratch, so must be saved
+	MVN	r6, #0
+	MOV	r5, r6, LSL #2
+	BL 	upfrom3			@ non leaf, so calls subroutine
+	POP	{r5, r6, pc}		@ restore r5 and return
+	
+upfrom3:
+	PUSH	{r6, lr}
+	MOV	r0, r0, ASR #2
+	BX	lr
+	POP	{r6, pc}
+	
+
+
+
 .Lfe1:
 	.size	main,.Lfe1-main
 
-	.data
-marke1:	.word 0x87654321
-
 // End of File
+
